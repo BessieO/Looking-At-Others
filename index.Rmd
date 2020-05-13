@@ -1,0 +1,99 @@
+---
+title: "Looking At Others"
+date: "May 2020"
+output:
+  html_document: default
+  pdf_document: default
+Author: BHOxley
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+library(gapminder)
+library(lattice) 
+```
+
+## Who's Paying More Attention to Others? 
+
+This analysis uses data from [study 1](https://journals-sagepub-com.sheffield.idm.oclc.org/doi/full/10.1177/0956797616667721) of a four-part study by Dietze & Knowles (2016). This study used visual tracking to determine how much visual attention individuals give to others in public. 
+
+see first five rows of original data below;
+
+```{r data origin, echo=TRUE, warning=FALSE}
+Initialdata <- read.csv("Projectdatatreated.csv", header = TRUE, sep = ",", na.strings = NA)
+print(head(Initialdata, 5))
+```
+
+## Research Question
+
+The current analysis aims to demonstrate if a difference in the quantity of visual attention given to others exists between individuals of a younger and older age group. This question originates from reading through news articles (like this one found at [Lightworkers](https://www.lightworkers.com/how-our-technology-is-killing-eye-contact/)). This article is suggestive of technology being the catalyst in reducing the younger generations’ likelihood to make eye-contact with others. Such articles claim that reduced eye-contact/attention to others could have a multitude of negative implications. 
+
+This analysis assumes that the younger age group in Dietze & Knowles (2016) study are more likely to have grown up with this 'overindulgence' in technology. 
+
+As visual attention to others is required to form eye contact, we therefore expect to see less visual attention directed to others seen in the younger age group.
+
+## Data Preparation
+The initial study1 data was treated so that missing values were replaced with 'NA'.
+
+Three participants data were removed from the data set as they had missing values in the variables of interest ('Age' and 'Looks').
+
+```{r data prep, echo=TRUE, warning=FALSE}
+
+Projectdatatreated <- Initialdata[-c(39, 45, 52), ]
+```
+
+Used in this analysis were the 'age' (in years) and 'looks' variables. The variable 'looks' measured the average number of times a participant looked at other individuals in public. Below is the summary of the age variable used in this analysis.
+
+```{r data, echo=TRUE, warning=FALSE}
+
+print(summary(Projectdatatreated$age))
+
+```
+
+Before visualization, Age data was split using the mean into 'Younger' (18-26 years old) and 'Older' (27-50 years old).
+
+```{r age, echo=TRUE, warning=FALSE}
+Age_group <- cut(Projectdatatreated$age, breaks = c(0,26,50), labels =c("Younger", "Older") )
+Numberlooks <- Projectdatatreated$looks
+```
+
+## Visualization
+
+The average number of looks towards other people was then plotted by age group. A box and whisker plot was used to show the distribution of average looks between the two age groups.
+
+```{r Boxplot, echo=TRUE, warning=FALSE}
+
+dataforboxplot <- data.frame(Numberlooks, Age_group)
+
+Boxplot_ageandlooks <- ggplot(dataforboxplot, aes(x=Age_group, y=Numberlooks)) + 
+  geom_boxplot(outlier.colour = "red", outlier.shape = 8, outlier.size = 3)
+Boxplot_ageandlooks <- Boxplot_ageandlooks + ylab("Average Number of Looks") + 
+  xlab("Age Group") + ggtitle("Average 'Looks' Distribution by Age")
+fill <- "cyan"
+Boxplot_ageandlooks <- Boxplot_ageandlooks + geom_boxplot(aes(fill = Age_group))
+
+print(Boxplot_ageandlooks)
+```
+
+Contrary to prediction, the Boxplot above suggests that on average, the 'younger' age group paid more visual attention to others in public than the 'older' group. An outlier is also visible on this plot but this was not removed prior to the t-test as the data set was already relatively small.
+To see if this difference was significant a two-way t-test was conducted;
+
+```{r t-test, echo=TRUE, warning=FALSE}
+
+print(t.test(Numberlooks ~ Age_group, mu=0, alt="two.sided", conf=0.95, var.eq=F, paired=F)) 
+```
+
+As the p-value is above that of the significance value (P<0.05), we conclude that no statistically significant difference is present. From this it can be concluded that the above shows no significant difference in looks given to others in public between age groups. 
+
+## Summary 
+From beginning without any knowledge or experience into coding and data visualisation, every step towards making this project has been something new to learn. The process of learning rtudio has been more difficult than I had initially imagined, but also very rewarding. 
+
+My analysis above is something I am proud of, however, if I had more time to spend learning rstudio and practicing data visualisation, I would like to think that I would be able to produce a more in-depth analysis. I would also have liked to produce more visualisations in my analysis, but as my research question was very simple I think this would be something I could do in a future project with more multi-faceted research questions. 
+
+Reference:
+Dietze, P., & Knowles, E. (2016). Social Class and the Motivational Relevance of Other Human Beings. Psychological Science, 27(11), 1517-1527. doi: 10.1177/0956797616667721. 
+
+Supporting materials can be found at my Github under repository titles [Looking.at.others](https://github.com/BessieO/Looking.At.Others)
