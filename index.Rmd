@@ -96,4 +96,4 @@ My analysis above is something I am proud of, however, if I had more time to spe
 Reference:
 Dietze, P., & Knowles, E. (2016). Social Class and the Motivational Relevance of Other Human Beings. Psychological Science, 27(11), 1517-1527. doi: 10.1177/0956797616667721. 
 
-Supporting materials can be found at my Github under repository titles [Looking.at.others](https://github.com/BessieO/Looking.At.Others)
+Supporting materials can be found at my Github under repository titles [Looking-at-others]https://github.com/BessieO/Looking-At-Others
